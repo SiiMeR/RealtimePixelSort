@@ -1,14 +1,36 @@
 ﻿// Each #kernel tells which function to compile; you can have many kernels
 #pragma kernel CSMain
 
-// Create a RenderTexture with enableRandomWrite flag and set it
-// with cs.SetTexture
+Texture2D<float4> Source;
+
+   
 RWTexture2D<float4> Result;
+
+// return true if col1 is bigger than col2 in every channel
+bool compareColors(float4 col1, float4 col2){
+
+    if(col1.x > col2.x && col1.y > col2.y && col1.z > col2.z ) {
+        return true;
+    }
+    return false;
+}
 
 [numthreads(8,8,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
-    // TODO: insert actual code here!
+    float4 s = float4(0,0,0,0);
+    float4 d = float4(1,1,1,1);
+    // float4 src = Source[id.xy];
 
-    Result[id.xy] = float4(id.x & id.y, (id.x & 15)/15.0, (id.y & 15)/15.0, 0.0);
+    if(compareColors(Source[id.xy], Source[id.xy + float2(1,1)])){
+        Result[id.xy] = Source[id.yx];
+        return;
+    }
+    
+ 
+    Result[id.xy] = Source[id.xy + float2(1,1)];
+    
+    
+    //Result[id.xy] = float4(id.x & id.y, (id.x & 15)/15.0, (id.y & 15)/15.0, 0.0);
 }
+
