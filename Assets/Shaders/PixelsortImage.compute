@@ -1,36 +1,66 @@
-﻿// Each #kernel tells which function to compile; you can have many kernels
+﻿// somewhat based on https://timseverien.com/posts/2017-08-17-sorting-pixels-with-webgl/
+
+// Each #kernel tells which function to compile; you can have many kernels
 #pragma kernel CSMain
 
-Texture2D<float4> Source;
+const float4 kRGBToYPrime = float4(0.299, 0.587, 0.114, 0.0);
+const float4 kRGBToI      = float4(0.596, -0.275, -0.321, 0.0);
+const float4 kRGBToQ      = float4(0.212, -0.523, 0.311, 0.0);
 
-   
+float uIteration;
+float4 Resolution;
+
+Texture2D<float4> Source;
 RWTexture2D<float4> Result;
 
-// return true if col1 is bigger than col2 in every channel
-bool compareColors(float4 col1, float4 col2){
+float4 getYIQC(float4 color) {
+    float YPrime = dot(color, kRGBToYPrime);
+    float I = dot(color, kRGBToI);
+    float Q = dot(color, kRGBToQ);
+    
+    float chroma = sqrt(I * I + Q * Q);
+    
+    return float4(YPrime, I, Q, chroma);
+}
 
-    if(col1.x > col2.x && col1.y > col2.y && col1.z > col2.z ) {
+
+bool compareColors(float4 a, float4 b){
+
+    float4 aYIQC = getYIQC(a);
+    float4 bYIQC = getYIQC(b);
+    
+    if (aYIQC.x > bYIQC.x) {
         return true;
     }
+    
+    if (aYIQC.x == bYIQC.x && aYIQC.w > bYIQC.w) {
+        return true;
+    } 
+    
     return false;
 }
+
 
 [numthreads(8,8,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
-    float4 s = float4(0,0,0,0);
-    float4 d = float4(1,1,1,1);
-    // float4 src = Source[id.xy];
-
-    if(compareColors(Source[id.xy], Source[id.xy + float2(1,1)])){
-        Result[id.xy] = Source[id.yx];
-        return;
+    bool checkPrevious = fmod(id.x + uIteration, 2.0) < 1.0;
+    float2 pixel = float2(-1.0, 0.0) / Resolution.xy;
+    
+    float4 current = Source[id.xy];
+    float4 reference = Source[checkPrevious ? id.xy-pixel : id.xy + pixel];
+    
+    if (checkPrevious){
+        if (compareColors(reference, current)){
+            Result[id.xy] = reference;
+            return;
+        }
+    } else {
+        if (compareColors(current, reference)){
+            Result[id.xy] = reference;
+            return;
+        }
     }
-    
- 
-    Result[id.xy] = Source[id.xy + float2(1,1)];
-    
-    
-    //Result[id.xy] = float4(id.x & id.y, (id.x & 15)/15.0, (id.y & 15)/15.0, 0.0);
+    Result[id.xy] = current;
 }
 
