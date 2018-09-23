@@ -118,7 +118,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-8746
+  m_Name: pb_Mesh11020
   serializedVersion: 9
   m_SubMeshes:
   - serializedVersion: 2
@@ -437,6 +437,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CSImagePixelSort: {fileID: 7200000, guid: 407b4acfe4ac3e74bbde493786c8813a, type: 3}
+  FragmentShaderPixelSort: {fileID: 4800000, guid: 9333c5620622b674da36f0b76d4f6359, type: 3}
+  Plane: {fileID: 1281646001}
 --- !u!1 &1281646001
 GameObject:
   m_ObjectHideFlags: 0
