@@ -437,7 +437,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CSImagePixelSort: {fileID: 7200000, guid: 407b4acfe4ac3e74bbde493786c8813a, type: 3}
-  FragmentShaderPixelSort: {fileID: 4800000, guid: 9333c5620622b674da36f0b76d4f6359, type: 3}
+  FragmentShaderPixelSort: {fileID: 4800000, guid: 83fb915f85ceb584c8a5a33837094bcd, type: 3}
   Plane: {fileID: 1281646001}
 --- !u!1 &1281646001
 GameObject:
