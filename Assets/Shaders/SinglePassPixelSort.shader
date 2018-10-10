@@ -121,18 +121,33 @@
 
             fixed4 frag (v2f i) : SV_Target
             {
+
+                
+                
                 for(int z = 0; z < 16; z++){
                     accum[z] = 0;
                 }
                 
                 float4 fragColor = float4(0,0,0,0);
                 
+                if(true){
+                
+                    return i.scrPos.xyxy;
+                
+                }
+                
+           /*     
                 if(i.scrPos.x / MM > float(MAXSIZE * 2)){
                     discard;
                 }
+                
+                                            
+
                 if(i.scrPos.y / MM > float(MAXSIZE)) {
                     discard;
                 }
+                
+*/
                 
                 for(int w = 0; w < MAXSIZE; w++){
                     accumValue(tex(w, i.scrPos.xy).g);
